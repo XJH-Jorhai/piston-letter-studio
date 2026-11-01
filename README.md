@@ -10,6 +10,7 @@
 - 可编辑完整周期的 Bézier 曲线，独立控制伸出、停留、收回。
 - GIF 在浏览器本地生成和下载，无需服务器上传或聊天代理。
 - 独立 HTML 导出内嵌所选素材和组件，可离线播放。
+- 页面播放器使用用户提供的 “Sam Gellaitry - Assumptions.mp3”，支持播放、暂停、进度和音量控制，点击后播放。音源位于 assets/audio/，不加入字母组件的导出文件。
 - 新增 [MC 原版预设](https://xjh-jorhai.github.io/piston-letter-studio/?mode=minecraft)：雕刻南瓜、四个 T 形铁块和三个固定活塞，原版 16×16 像素纹理。
 
 ## MC 原版

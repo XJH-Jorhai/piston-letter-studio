@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3
+
+- Added the user-provided Sam Gellaitry — Assumptions audio with native playback, seeking and volume controls.
+- Added a responsive player above the workspace tabs, with metadata preload and user-initiated playback.
+
 ## 1.1.2
 
 - Renamed the page to “随时随地，即刻开凿” and the settings section to “参数设置”.
