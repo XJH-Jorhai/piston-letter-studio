@@ -4,14 +4,20 @@ import {download,exportGif,exportHtml,embedSnippet} from './export.js';
 const $=id=>document.getElementById(id),animation=$('animation');
 let state,curve,manifest,saveTimer,toastTimer,exporting=false,exportAbort,presetIndex=0;
 try{state=normalizeConfig(JSON.parse(localStorage.getItem('piston-letter-studio:config'))||DEFAULT_CONFIG);}catch{state=normalizeConfig();}
+const requestedMode=new URLSearchParams(location.search).get('mode');
+if(['letters','minecraft'].includes(requestedMode))state.mode=requestedMode;
 const notify=message=>{$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);};
 function persist(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('piston-letter-studio:config',JSON.stringify(state));}catch{}},250);}
 function sync(){
   for(const slot of ['top','body','left','right'])document.querySelector('[data-slot="'+slot+'"]').value=state.letters[slot];
+  const minecraft=state.mode==='minecraft';
+  document.querySelector('.letter-grid').hidden=minecraft;$('minecraft-note').hidden=!minecraft;
+  $('minecraft-preset').setAttribute('aria-pressed',String(minecraft));
+  document.querySelectorAll('[data-letters]').forEach(button=>button.setAttribute('aria-pressed',String(!minecraft&&button.dataset.letters===[state.letters.left,state.letters.right,state.letters.body,state.letters.top].join(''))));
   for(const n of ['period','stroke']){$(n+'-range').value=state[n];$(n+'-number').value=n==='period'?state[n].toFixed(2):state[n];}
   $('background').value=state.background;$('stage').classList.toggle('transparent',state.background==='transparent');
   $('frequency').textContent=(1/state.period).toFixed(2)+' 次 / 秒';
-  $('motion-caption').textContent=state.letters.left+' / '+state.letters.right+' 同步，'+state.letters.body+' 反向联动';
+  $('motion-caption').textContent=minecraft?'左右铁块同步，中央铁块反向联动':state.letters.left+' / '+state.letters.right+' 同步，'+state.letters.body+' 反向联动';
   $('embed-code').textContent=embedSnippet(state);
   $('play').textContent=animation.playing?'Ⅱ':'▶';$('play').setAttribute('aria-label',animation.playing?'暂停动画':'播放动画');
 }
@@ -32,7 +38,8 @@ $('scrub').addEventListener('input',e=>{animation.pause();animation.renderAt(Num
 animation.addEventListener('frame',e=>{const p=e.detail.phase;$('phase').textContent=Math.round(p*100)+'%';$('scrub').value=p*100;curve?.setPhase(p);});
 animation.addEventListener('animation-error',e=>notify(e.detail.message));
 curve=new CurveEditor($('curve-editor'),state.curve,{onChange:points=>{state.curve=points;apply({fields:false});},onScrub:p=>{animation.pause();animation.renderAt(p);sync();}});
-document.querySelectorAll('[data-letters]').forEach(button=>button.addEventListener('click',()=>{const p=button.dataset.letters;state.letters={left:p[0],right:p[1],body:p[2],top:p[3]};apply();}));
+document.querySelectorAll('[data-letters]').forEach(button=>button.addEventListener('click',()=>{const p=button.dataset.letters;state.mode='letters';delete state.assets;state.letters={left:p[0],right:p[1],body:p[2],top:p[3]};apply();}));
+$('minecraft-preset').addEventListener('click',()=>{state.mode='minecraft';delete state.assets;apply();});
 const presets=[
   {name:'原始非对称节奏',curve:DEFAULT_CONFIG.curve},
   {name:'平滑往返',curve:[{t:0,v:0,in:null,out:{t:.15,v:0}},{t:.5,v:1,in:{t:.35,v:1},out:{t:.65,v:1}},{t:1,v:0,in:{t:.85,v:0},out:null}]},
@@ -48,12 +55,12 @@ function renderLibrary(style='compact'){
   $('letter-gallery').innerHTML=Array.from(ALPHABET,l=>{const asset=manifest.styles[style]?.[l];return asset?'<article class="glyph-card"><img loading="lazy" src="./'+asset.src+'" alt="'+style+' '+l+'" width="'+asset.width+'" height="'+asset.height+'"><div><strong>'+l+'</strong><a href="./'+asset.src+'" download="piston-'+style+'-'+l+'.png" aria-label="下载 '+l+' PNG">PNG ↓</a></div></article>':'';}).join('');
 }
 document.querySelectorAll('[data-style]').forEach(b=>b.addEventListener('click',()=>renderLibrary(b.dataset.style)));
-function fileStem(){return [state.letters.left,state.letters.right,state.letters.body,state.letters.top].join('')+'-'+state.period.toFixed(2)+'s';}
+function fileStem(){return (state.mode==='minecraft'?'minecraft-original':[state.letters.left,state.letters.right,state.letters.body,state.letters.top].join(''))+'-'+state.period.toFixed(2)+'s';}
 function lockExport(busy,{cancellable=false}={}){
   exporting=busy;for(const id of ['export-html','export-gif','use-export-html','use-export-gif'])$(id).disabled=busy;
   $('cancel-export').hidden=!busy||!cancellable;$('export-progress').hidden=!busy;
 }
-async function htmlExport(){if(exporting)return;const name=fileStem();lockExport(true);try{$('export-progress').querySelector('span').textContent='打包字母和曲线…';const blob=await exportHtml(animation);download(blob,name+'.html');notify('已下载独立网页动画，可离线播放或通过 iframe 嵌入。');}catch(e){notify(e.message);}finally{lockExport(false);}}
+async function htmlExport(){if(exporting)return;const name=fileStem();lockExport(true);try{$('export-progress').querySelector('span').textContent='打包素材和曲线…';const blob=await exportHtml(animation);download(blob,name+'.html');notify('已下载独立网页动画，可离线播放或通过 iframe 嵌入。');}catch(e){notify(e.message);}finally{lockExport(false);}}
 async function gifExport(){if(exporting)return;const name=fileStem();lockExport(true,{cancellable:true});exportAbort=new AbortController();const progress=$('export-progress');try{const {blob}=await exportGif(animation,{size:768,signal:exportAbort.signal,onProgress:(fraction,i,n)=>{progress.querySelector('progress').value=fraction;progress.querySelector('span').textContent=i+' / '+n+' 帧';}});download(blob,name+'.gif');notify('GIF 已生成，完整保留当前字母与曲线。');}catch(e){notify(e.name==='AbortError'?'已取消导出。':e.message);}finally{lockExport(false);exportAbort=null;}}
 for(const id of ['export-html','use-export-html'])$(id).addEventListener('click',htmlExport);
 for(const id of ['export-gif','use-export-gif'])$(id).addEventListener('click',gifExport);

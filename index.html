@@ -33,7 +33,9 @@
         </section>
         <section class="settings-panel" aria-label="动画设置">
           <div class="setting-section">
-            <div class="section-heading"><h2>四个位置，任意字母</h2><div class="preset-pair"><button type="button" data-letters="GTMC">GTMC</button><button type="button" data-letters="DDMC">DDMC</button></div></div>
+            <div class="section-heading"><h2>字母与原版方块</h2></div>
+            <div class="preset-pair model-presets" role="group" aria-label="造型预设"><button type="button" data-letters="GTMC" aria-pressed="true">GTMC</button><button type="button" data-letters="DDMC" aria-pressed="false">DDMC</button><button type="button" id="minecraft-preset" aria-pressed="false">MC 原版</button></div>
+            <p id="minecraft-note" class="model-note" hidden>雕刻南瓜 × 1 · 铁块 × 4 · 固定活塞 × 3<br>三格高，行程 100% = 一格。左右铁块同步，中间反向。</p>
             <div class="letter-grid">
               <label><span>头部 <small>南瓜体</small></span><select data-slot="top" aria-label="头部字母"></select></label>
               <label><span>躯干 <small>拉长体</small></span><select data-slot="body" aria-label="躯干字母"></select></label>
@@ -48,7 +50,7 @@
           <div class="setting-section curve-section"><div class="section-heading"><h2>行程曲线</h2><button type="button" id="curve-presets" class="text-button">切换节奏</button></div><div id="curve-editor"></div></div>
         </section>
       </div>
-      <div class="config-bar"><span>把这组字母和节奏一起保存。</span><div><button class="text-button" id="save-config" type="button">保存配置 JSON</button><button class="text-button" id="load-config" type="button">导入配置</button><input id="config-file" type="file" accept=".json,application/json" hidden></div></div>
+      <div class="config-bar"><span>把造型和节奏一起保存。</span><div><button class="text-button" id="save-config" type="button">保存配置 JSON</button><button class="text-button" id="load-config" type="button">导入配置</button><input id="config-file" type="file" accept=".json,application/json" hidden></div></div>
     </section>
     <section id="panel-library" role="tabpanel" aria-labelledby="tab-library" hidden>
       <div class="library-heading"><div><h2>一套造型，三种字母性格。</h2><p>每种样式都包含完整 A–Z，透明 PNG 可单独下载。</p></div><div class="style-tabs" role="group" aria-label="素材风格"><button type="button" data-style="compact" aria-pressed="true">短体金属</button><button type="button" data-style="tall" aria-pressed="false">拉长金属</button><button type="button" data-style="pumpkin" aria-pressed="false">南瓜造型</button></div></div>
@@ -66,7 +68,7 @@
       </div>
     </section>
   </main>
-  <footer><span>PISTON LETTER STUDIO</span><span>三套字母 · 一条属于你的曲线</span></footer>
+  <footer><span>PISTON LETTER STUDIO</span><span>三套字母 + MC 原版 · <a href="./assets/minecraft/README.md" target="_blank" rel="noopener">原版材质来源</a></span></footer>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script type="module" src="./src/editor.js"></script>
 </body>

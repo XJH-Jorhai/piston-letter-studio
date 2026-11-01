@@ -3,9 +3,30 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
-import {normalizeConfig,normalizeCurve,DEFAULT_CURVE,DEFAULT_CONFIG,sampleCurve,makeLayout,frameState,makeGifSchedule,ALPHABET} from '../src/piston-letters.js';
+import {normalizeConfig,normalizeCurve,DEFAULT_CURVE,DEFAULT_CONFIG,sampleCurve,makeLayout,frameState,makeGifSchedule,ALPHABET,minecraftParts,MINECRAFT_TEXTURES} from '../src/piston-letters.js';
 const root=path.resolve(fileURLToPath(new URL('../',import.meta.url)));
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'assets/manifest.json')));
+test('Minecraft has original 16px textures, a three-block T, and fixed piston housings',()=>{
+  for(const name of Object.values(MINECRAFT_TEXTURES)){
+    const png=fs.readFileSync(path.join(root,'assets/minecraft/'+name+'.png'));
+    assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png.readUInt32BE(16),16);assert.equal(png.readUInt32BE(20),16);
+  }
+  const config=normalizeConfig({mode:'minecraft',stroke:100});
+  assert.equal(JSON.parse(JSON.stringify(config)).mode,'minecraft');
+  const rest=minecraftParts(frameState(config,0,{bases:{}}));
+  for(const phase of [0,.5,.75]){
+    const f=frameState(config,phase,{bases:{}}),parts=minecraftParts(f);
+    assert.deepEqual(parts.filter(p=>p.id.endsWith('-base')),rest.filter(p=>p.id.endsWith('-base')));
+    assert.deepEqual(parts.find(p=>p.id==='pumpkin'),rest.find(p=>p.id==='pumpkin'));
+    assert.equal(parts.filter(p=>p.material==='iron').length,4);
+    assert.equal(Math.max(...parts.map(p=>p.y+p.h)),3);
+    for(const n of ['G','M','T']){
+      const rod=parts.find(p=>p.id===n+'-rod'),head=parts.find(p=>p.id===n+'-head'),block=parts.find(p=>p.id===n+'-iron');
+      if(f.ext[n]===0)assert.equal(rod,undefined);else{assert.equal(rod.d,f.ext[n]);assert.equal(rod.z+rod.d,head.z);}
+      assert.equal(head.z+head.d,block.z);
+    }
+  }
+});
 test('all three asset styles contain exactly A–Z with usable PNGs',()=>{
   for(const style of ['compact','tall','pumpkin']){
     assert.equal(Object.keys(manifest.styles[style]).sort().join(''),ALPHABET);

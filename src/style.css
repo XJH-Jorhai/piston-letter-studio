@@ -14,3 +14,8 @@
 .curve-fields label,.curve-help,.curve-actions button{font-size:11px}.curve-fields input,.curve-fields select{font-size:12px}.curve-axis{font-size:11px}.letter-grid span{font-size:11px}.letter-grid small{font-size:10px}.parameter-head,.parameter-head output,.parameter-head span{font-size:11px}.export-hint{font-size:11px}.glyph-card a{font-size:11px}
 @media(max-width:700px){.curve-fields input,.curve-fields select,.unit-input input{font-size:16px}.preview-caption select{font-size:16px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.model-presets{margin:0 0 16px;flex-wrap:wrap;gap:8px}
+.model-presets button{min-height:36px;padding:6px 16px}
+.model-presets button[aria-pressed="true"]{background:var(--ink,#162637);color:#fffbf2}
+.model-note{font-size:13px;line-height:1.8;margin:0;padding:14px;border:1px solid #d8d6ce;border-radius:8px;background:#fffbf2}
+.letter-grid[hidden],.model-note[hidden]{display:none}

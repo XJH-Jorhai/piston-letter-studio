@@ -10,7 +10,8 @@ export const DEFAULT_CURVE = [
   {t:.8256814418694911,v:1,in:{t:.7993994003687148,v:1},out:{t:.9096758915827823,v:1}},
   {t:1,v:0,in:{t:.9096758915827823,v:0},out:null}
 ];
-export const DEFAULT_CONFIG = {letters:{top:'C',body:'M',left:'G',right:'T'},period:.67,stroke:160,background:'#fffbf2',curve:DEFAULT_CURVE};
+export const DEFAULT_CONFIG = {mode:'letters',letters:{top:'C',body:'M',left:'G',right:'T'},period:.67,stroke:160,background:'#fffbf2',curve:DEFAULT_CURVE};
+export const MINECRAFT_TEXTURES={iron:'iron_block',pumpkinFront:'carved_pumpkin',pumpkinSide:'pumpkin_side',pumpkinTop:'pumpkin_top',pistonTop:'piston_top',pistonSide:'piston_side',pistonBottom:'piston_bottom',pistonInner:'piston_inner'};
 const clone = value => JSON.parse(JSON.stringify(value));
 function finite(value,fallback){return Number.isFinite(Number(value))?Number(value):fallback;}
 export function normalizeCurve(input=DEFAULT_CURVE){
@@ -36,6 +37,7 @@ export function normalizeConfig(input={}){
     if(!/^[A-Z]$/.test(letters[key]))throw new TypeError('字母必须为 A–Z。');
   }
   const result={letters,period:clamp(finite(input.period,.67),.2,5),stroke:clamp(finite(input.stroke,160),0,200),background:input.background==='transparent'?'transparent':/^#[\da-f]{6}$/i.test(input.background||'')?input.background:'#fffbf2',curve:normalizeCurve(input.curve||DEFAULT_CURVE)};
+  result.mode=input.mode==='minecraft'?'minecraft':'letters';
   if(input.assets)result.assets=clone(input.assets);
   return result;
 }
@@ -75,6 +77,12 @@ function loadImage(src){
   return imageCache.get(src);
 }
 export async function resolveAssets(config,base=MODULE_BASE){
+  if(config.mode==='minecraft'){
+    const metadata=config.assets?clone(config.assets):Object.fromEntries(Object.entries(MINECRAFT_TEXTURES).map(([key,name])=>[key,{src:'assets/minecraft/'+name+'.png',width:16,height:16}]));
+    const images={};
+    await Promise.all(Object.entries(metadata).map(async([key,entry])=>{entry.src=new URL(entry.src,base).href;images[key]=await loadImage(entry.src);}));
+    return {metadata,images,layout:{bases:{}}};
+  }
   let meta;
   if(config.assets)meta=clone(config.assets);
   else{
@@ -176,9 +184,65 @@ const bases=layout.bases,attach=layout.attach,cOrigin=[389,82];
 const gl=canvas.getContext('webgl2',{alpha:true,antialias:true,preserveDrawingBuffer:true});return gl?gpuRenderer(gl):cpuRenderer(canvas.getContext('2d',{willReadFrequently:true}));
 }
 
+/** Cuboids in block units; all three pistons face +Z, with fixed housings. */
+export function minecraftParts(frame){
+  const parts=[],box=(id,x,y,z,w,h,d,material)=>parts.push({id,x,y,z,w,h,d,material});
+  for(const [name,x] of [['G',-1],['M',0],['T',1]]){
+    const e=frame.ext[name];
+    box(name+'-base',x,1,-1,1,1,.75,'piston');
+    if(e>1e-8)box(name+'-rod',x+.375,1.375,-.25,.25,.25,e,'rod');
+    box(name+'-head',x,1,e-.25,1,1,.25,'head');
+    box(name+'-iron',x,1,e,1,1,1,'iron');
+    if(name==='M')box('lower-iron',x,0,e,1,1,1,'iron');
+  }
+  box('pumpkin',0,2,0,1,1,1,'pumpkin');
+  return parts;
+}
+function createMinecraftRenderer(canvas,images){
+  canvas.width=canvas.height=768;
+  const ctx=canvas.getContext('2d'),tiles=new Map();
+  const project=([x,y,z])=>[390+130*x-70*z,475+28*x-145*y+58*z];
+  function tile(name,shade=0,rotation=0,crop=[0,0,16,16]){
+    const key=JSON.stringify([name,shade,rotation,crop]);if(tiles.has(key))return tiles.get(key);
+    const [sx,sy,sw,sh]=crop,turned=Math.abs(rotation)%180===90,c=document.createElement('canvas');
+    c.width=turned?sh:sw;c.height=turned?sw:sh;const t=c.getContext('2d');
+    t.translate(c.width/2,c.height/2);t.rotate(rotation*Math.PI/180);t.drawImage(images[name],sx,sy,sw,sh,-sw/2,-sh/2,sw,sh);
+    t.setTransform(1,0,0,1,0,0);t.fillStyle='rgba(0,0,0,'+shade+')';t.fillRect(0,0,c.width,c.height);tiles.set(key,c);return c;
+  }
+  function material(kind,face){
+    const shade=face==='top'?0:face==='front'?.12:.28;
+    if(kind==='iron')return tile('iron',shade);
+    if(kind==='pumpkin')return tile(face==='front'?'pumpkinFront':face==='top'?'pumpkinTop':'pumpkinSide',shade);
+    if(kind==='rod')return tile('pistonTop',shade,face==='right'?-90:180,[6,6,4,4]);
+    if(face==='front')return tile(kind==='head'?'pistonTop':'pistonInner',shade);
+    return tile('pistonSide',shade,face==='right'?-90:180,kind==='head'?[0,0,16,4]:[0,4,16,12]);
+  }
+  return {type:'minecraft',dispose(){tiles.clear();},draw(frame){
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,768,768);ctx.imageSmoothingEnabled=false;
+    const faces=[];
+    function face(part,name,a,b,c){
+      const center=a.map((v,i)=>(b[i]+c[i])/2),depth=center[0]*70/130+center[1]*(28*70/130+58)/145+center[2];
+      faces.push({part,name,points:[a,b,c].map(project),depth});
+    }
+    for(const p of minecraftParts(frame)){
+      const {x,y,z,w,h,d}=p;
+      face(p,'front',[x,y+h,z+d],[x+w,y+h,z+d],[x,y,z+d]);
+      face(p,'right',[x+w,y+h,z+d],[x+w,y+h,z],[x+w,y,z+d]);
+      face(p,'top',[x,y+h,z],[x+w,y+h,z],[x,y+h,z+d]);
+    }
+    faces.sort((a,b)=>a.depth-b.depth);
+    for(const f of faces){
+      const [a,b,c]=f.points,t=material(f.part.material,f.name);
+      ctx.setTransform((b[0]-a[0])/t.width,(b[1]-a[1])/t.width,(c[0]-a[0])/t.height,(c[1]-a[1])/t.height,a[0],a[1]);
+      ctx.drawImage(t,0,0);
+    }
+    ctx.setTransform(1,0,0,1,0,0);
+  }};
+}
+
 const ElementBase=globalThis.HTMLElement||class {};
 export class PistonLetters extends ElementBase{
-  static get observedAttributes(){return ['config','config-id','left','right','top','body','period','stroke','paused','asset-base'];}
+  static get observedAttributes(){return ['config','config-id','mode','left','right','top','body','period','stroke','paused','asset-base'];}
   constructor(){
     super();this._config=normalizeConfig();this._phase=0;this._playing=true;this._loadedKey='';this._request=0;this._ready=Promise.resolve();this._last=0;this._raf=0;
     if(!this.attachShadow)return;
@@ -194,6 +258,7 @@ export class PistonLetters extends ElementBase{
       if(this.hasAttribute('config'))input=JSON.parse(this.getAttribute('config'));
       const letters={...input.letters};for(const n of ['top','body','left','right'])if(this.hasAttribute(n))letters[n]=this.getAttribute(n);
       input.letters=letters;for(const n of ['period','stroke'])if(this.hasAttribute(n))input[n]=Number(this.getAttribute(n));
+      if(this.hasAttribute('mode'))input.mode=this.getAttribute('mode');
       if(this.hasAttribute('paused'))this.pause();this.setConfig(input).catch(()=>{});
     }catch(e){this._showError(e);}
   }
@@ -206,13 +271,15 @@ export class PistonLetters extends ElementBase{
   setConfig(input){
     const next=normalizeConfig(input);this._config=next;
     if(this.canvas)this.canvas.style.background=next.background==='transparent'?'transparent':next.background;
-    const key=JSON.stringify({letters:next.letters,assets:next.assets,base:this.assetBase});
+    const key=JSON.stringify({mode:next.mode,letters:next.letters,assets:next.assets,base:this.assetBase});
     if(key===this._loadedKey&&this._renderer){this.renderAt(this._phase);return Promise.resolve(this);}
     const request=++this._request;
     this._ready=resolveAssets(next,this.assetBase).then(resolved=>{
       if(request!==this._request)return this;
-      this._renderer?.dispose?.();this._assets=resolved;this._renderer=createRenderer(this.canvas,resolved.images,resolved.layout);this._loadedKey=key;this._error.hidden=true;
-      this.canvas.setAttribute('aria-label',next.letters.left+'、'+next.letters.right+' 同步伸缩，'+next.letters.body+' 反向联动，'+next.letters.top+' 为顶部字母。');
+      this._renderer?.dispose?.();
+      if(this._renderMode!==next.mode){const fresh=this.canvas.cloneNode();fresh.width=fresh.height=768;this.canvas.replaceWith(fresh);this.canvas=fresh;this._renderMode=next.mode;}
+      this._assets=resolved;this._renderer=next.mode==='minecraft'?createMinecraftRenderer(this.canvas,resolved.images):createRenderer(this.canvas,resolved.images,resolved.layout);this._loadedKey=key;this._error.hidden=true;
+      this.canvas.setAttribute('aria-label',next.mode==='minecraft'?'MC 原版：雕刻南瓜头，左右铁块同步伸缩，中间铁块反向联动。':next.letters.left+'、'+next.letters.right+' 同步伸缩，'+next.letters.body+' 反向联动，'+next.letters.top+' 为顶部字母。');
       this.renderAt(this._phase);this.dispatchEvent(new CustomEvent('ready',{detail:{config:this.config}}));return this;
     }).catch(error=>{if(request===this._request)this._showError(error);throw error;});
     return this._ready;

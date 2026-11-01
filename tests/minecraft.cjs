@@ -1,0 +1,42 @@
+const fs=require('fs'),path=require('path'),assert=require('assert/strict');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const out=path.resolve(__dirname,'../.test-results'),base=process.env.BASE_URL||'http://127.0.0.1:4174/';
+(async()=>{
+  fs.mkdirSync(out,{recursive:true});
+  const browser=await chromium.launch({headless:true,executablePath:process.platform==='win32'?'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe':undefined});
+  const page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true}),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(base);await page.waitForFunction(()=>window.pistonStudio?.animation._renderer);
+  await page.click('#minecraft-preset');await page.waitForFunction(()=>pistonStudio.animation._renderer.type==='minecraft');
+  await page.evaluate(()=>pistonStudio.animation.pause());
+  assert.equal(await page.locator('.letter-grid').isVisible(),false);
+  const original=await page.evaluate(()=>pistonStudio.config);
+  assert.equal(original.mode,'minecraft');
+  for(const phase of [0,.5,.75]){
+    await page.evaluate(p=>pistonStudio.animation.renderAt(p),phase);
+    await page.locator('#animation').screenshot({path:path.join(out,'minecraft-'+phase+'.png')});
+  }
+  await page.screenshot({path:path.join(out,'minecraft-desktop.png'),fullPage:true});
+  await page.selectOption('#background','transparent');
+  const gifWait=page.waitForEvent('download');await page.click('#export-gif');const gif=await gifWait;
+  assert.equal(gif.suggestedFilename(),'minecraft-original-0.67s.gif');await gif.saveAs(path.join(out,'minecraft.gif'));
+  assert.equal(fs.readFileSync(path.join(out,'minecraft.gif')).subarray(0,6).toString(),'GIF89a');
+  await page.waitForFunction(()=>!document.getElementById('export-html').disabled);
+  const htmlWait=page.waitForEvent('download');await page.click('#export-html');const html=await htmlWait;
+  const file=path.join(out,'minecraft.html');await html.saveAs(file);
+  const offline=await browser.newContext({offline:true}),embed=await offline.newPage();
+  embed.on('pageerror',e=>errors.push(e.message));
+  await embed.goto('file:///'+file.replace(/\\/g,'/'));await embed.waitForFunction(()=>document.querySelector('piston-letters')?._renderer?.type==='minecraft');
+  const snapshot=await embed.evaluate(()=>{const a=document.querySelector('piston-letters');a.pause();a.renderAt(.5);return {mode:a.config.mode,assets:Object.values(a.config.assets).every(x=>x.src.startsWith('data:image/png')),alpha:a.captureFrame(.5,{size:16}).getContext('2d').getImageData(0,0,1,1).data[3]};});
+  assert.deepEqual(snapshot,{mode:'minecraft',assets:true,alpha:0});await offline.close();
+  const jsonWait=page.waitForEvent('download');await page.click('#save-config');const json=await jsonWait;const jsonFile=path.join(out,'minecraft.json');await json.saveAs(jsonFile);
+  await page.click('[data-letters=DDMC]');await page.waitForFunction(()=>pistonStudio.animation._renderer.type!=='minecraft');
+  assert.equal(await page.locator('.letter-grid').isVisible(),true);
+  await page.setInputFiles('#config-file',jsonFile);await page.waitForFunction(()=>pistonStudio.animation._renderer.type==='minecraft');
+  await page.fill('#stroke-number','200');await page.evaluate(()=>pistonStudio.animation.renderAt(.75));
+  await page.setViewportSize({width:320,height:1000});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
+  await page.screenshot({path:path.join(out,'minecraft-mobile.png'),fullPage:true});
+  assert.deepEqual(errors,[]);await browser.close();
+  console.log(JSON.stringify({mode:'minecraft',phases:3,gif:true,offlineHtml:true,jsonRoundTrip:true,switchToLetters:true,mobile320:true,errors}));
+})().catch(e=>{console.error(e);process.exit(1);});

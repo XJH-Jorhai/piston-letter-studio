@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0
+
+- Added an MC original preset: a carved pumpkin, four iron blocks and three fixed piston housings, with sourced Java Edition 1.21.4 textures.
+- The block renderer uses a shared orthographic grid, nearest-neighbor pixels and block-unit travel; piston rods disappear completely on retraction.
+- Original and letter presets share speed, stroke, authored curves, JSON configuration, GIF and self-contained offline HTML export.
+- Added mode="minecraft" and a direct demo link with ?mode=minecraft.
+- Verified geometry, preset switching, transparent GIF, offline HTML, configuration roundtrip and the 320px mobile layout.
+
 ## 1.0.1
 
 Improvements after the first deployed GitHub Pages walkthrough:

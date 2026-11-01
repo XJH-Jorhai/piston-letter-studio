@@ -10,6 +10,24 @@
 - 可编辑完整周期的 Bézier 曲线，独立控制伸出、停留、收回。
 - GIF 在浏览器本地生成和下载，无需服务器上传或聊天代理。
 - 独立 HTML 导出内嵌所选素材和组件，可离线播放。
+- 新增 [MC 原版预设](https://xjh-jorhai.github.io/piston-letter-studio/?mode=minecraft)：雕刻南瓜、四个 T 形铁块和三个固定活塞，原版 16×16 像素纹理。
+
+## MC 原版
+
+在编辑器中点击“MC 原版”即可切换。它沿用当前的周期、行程、背景与完整曲线；
+GTMC / DDMC 按钮可以切回字母。JSON、GIF 和独立 HTML 都保留选择的造型。
+
+原版结构高三格，100% 行程对应一格。左右铁块同步，中间上下两个铁块反向联动；
+南瓜头固定，三个活塞底座固定，活塞杆和活塞头随铁块伸缩，收回时杆完全缩入底座。
+这是动画示意，不模拟游戏中的红石逻辑。
+
+组件也支持直接指定：
+
+    <piston-letters mode="minecraft" period="0.67" stroke="100"></piston-letters>
+
+或设置 config.mode = 'minecraft'；设为 'letters' 返回字母造型。
+本预设的方块尺寸固定，四个字母选择仅用于字母造型。
+材质来源、版本及归属见 [assets/minecraft/README.md](assets/minecraft/README.md)。
 
 ## 本地运行
 
@@ -107,5 +125,8 @@ manifest.json 保存尺寸和位于实心笔画上的连接点。更换字母时
 ## 第三方
 
 GIF 编码使用 [gifenc 1.0.3](https://github.com/mattdesl/gifenc)，遵循 MIT 许可，原许可见 vendor/gifenc.LICENSE.md。其他运行时功能无第三方框架依赖。
+
+Minecraft 原版纹理来自 Java Edition 1.21.4 的提取镜像，归 Mojang / Microsoft 所有；
+详见 [原版材质来源](assets/minecraft/README.md)。
 
 GitHub Pages 可直接从 main 分支根目录部署，.nojekyll 已提供。dist/ 是用于其他静态托管的构建输出。
