@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+- Fixed Minecraft travel to 100% (one block) in the component, editor, imported configurations and exports.
+- Disabled Minecraft stroke controls; letter presets retain adjustable travel.
+- Replaced whole-face sorting with per-pixel depth testing in both WebGL and CPU renderers, fixing iron/pumpkin overlap around 46% playback.
+
 ## 1.1.0
 
 - Added an MC original preset: a carved pumpkin, four iron blocks and three fixed piston housings, with sourced Java Edition 1.21.4 textures.

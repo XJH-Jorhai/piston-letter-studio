@@ -13,6 +13,8 @@ test('Minecraft has original 16px textures, a three-block T, and fixed piston ho
   }
   const config=normalizeConfig({mode:'minecraft',stroke:100});
   assert.equal(JSON.parse(JSON.stringify(config)).mode,'minecraft');
+  for(const stroke of [undefined,0,65,160,200])assert.equal(normalizeConfig({mode:'minecraft',stroke}).stroke,100);
+  assert.equal(normalizeConfig({mode:'letters',stroke:160}).stroke,160);
   const rest=minecraftParts(frameState(config,0,{bases:{}}));
   for(const phase of [0,.5,.75]){
     const f=frameState(config,phase,{bases:{}}),parts=minecraftParts(f);

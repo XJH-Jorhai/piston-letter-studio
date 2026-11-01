@@ -12,6 +12,12 @@ const out=path.resolve(__dirname,'../.test-results'),base=process.env.BASE_URL||
   assert.equal(await page.locator('.letter-grid').isVisible(),false);
   const original=await page.evaluate(()=>pistonStudio.config);
   assert.equal(original.mode,'minecraft');
+  assert.equal(original.stroke,100);
+  assert.equal(await page.inputValue('#stroke-number'),'100');
+  assert.equal(await page.locator('#stroke-range').isDisabled(),true);
+  assert.equal(await page.locator('#stroke-number').isDisabled(),true);
+  await page.evaluate(async()=>pistonStudio.setConfig({...pistonStudio.config,stroke:200}));
+  assert.equal(await page.evaluate(()=>pistonStudio.config.stroke),100);
   for(const phase of [0,.5,.75]){
     await page.evaluate(p=>pistonStudio.animation.renderAt(p),phase);
     await page.locator('#animation').screenshot({path:path.join(out,'minecraft-'+phase+'.png')});
@@ -27,13 +33,16 @@ const out=path.resolve(__dirname,'../.test-results'),base=process.env.BASE_URL||
   const offline=await browser.newContext({offline:true}),embed=await offline.newPage();
   embed.on('pageerror',e=>errors.push(e.message));
   await embed.goto('file:///'+file.replace(/\\/g,'/'));await embed.waitForFunction(()=>document.querySelector('piston-letters')?._renderer?.type==='minecraft');
-  const snapshot=await embed.evaluate(()=>{const a=document.querySelector('piston-letters');a.pause();a.renderAt(.5);return {mode:a.config.mode,assets:Object.values(a.config.assets).every(x=>x.src.startsWith('data:image/png')),alpha:a.captureFrame(.5,{size:16}).getContext('2d').getImageData(0,0,1,1).data[3]};});
-  assert.deepEqual(snapshot,{mode:'minecraft',assets:true,alpha:0});await offline.close();
+  const snapshot=await embed.evaluate(()=>{const a=document.querySelector('piston-letters');a.pause();a.renderAt(.5);return {mode:a.config.mode,stroke:a.config.stroke,assets:Object.values(a.config.assets).every(x=>x.src.startsWith('data:image/png')),alpha:a.captureFrame(.5,{size:16}).getContext('2d').getImageData(0,0,1,1).data[3]};});
+  assert.deepEqual(snapshot,{mode:'minecraft',stroke:100,assets:true,alpha:0});await offline.close();
   const jsonWait=page.waitForEvent('download');await page.click('#save-config');const json=await jsonWait;const jsonFile=path.join(out,'minecraft.json');await json.saveAs(jsonFile);
   await page.click('[data-letters=DDMC]');await page.waitForFunction(()=>pistonStudio.animation._renderer.type!=='minecraft');
   assert.equal(await page.locator('.letter-grid').isVisible(),true);
+  assert.equal(await page.locator('#stroke-number').isEnabled(),true);
+  await page.fill('#stroke-number','134');
+  assert.equal(await page.evaluate(()=>pistonStudio.config.stroke),134);
   await page.setInputFiles('#config-file',jsonFile);await page.waitForFunction(()=>pistonStudio.animation._renderer.type==='minecraft');
-  await page.fill('#stroke-number','200');await page.evaluate(()=>pistonStudio.animation.renderAt(.75));
+  assert.equal(await page.inputValue('#stroke-number'),'100');await page.evaluate(()=>pistonStudio.animation.renderAt(.75));
   await page.setViewportSize({width:320,height:1000});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
   await page.screenshot({path:path.join(out,'minecraft-mobile.png'),fullPage:true});

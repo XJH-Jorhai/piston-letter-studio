@@ -35,7 +35,7 @@
           <div class="setting-section">
             <div class="section-heading"><h2>字母与原版方块</h2></div>
             <div class="preset-pair model-presets" role="group" aria-label="造型预设"><button type="button" data-letters="GTMC" aria-pressed="true">GTMC</button><button type="button" data-letters="DDMC" aria-pressed="false">DDMC</button><button type="button" id="minecraft-preset" aria-pressed="false">MC 原版</button></div>
-            <p id="minecraft-note" class="model-note" hidden>雕刻南瓜 × 1 · 铁块 × 4 · 固定活塞 × 3<br>三格高，行程 100% = 一格。左右铁块同步，中间反向。</p>
+            <p id="minecraft-note" class="model-note" hidden>雕刻南瓜 × 1 · 铁块 × 4 · 固定活塞 × 3<br>三格高，行程固定 100%（一格）。左右铁块同步，中间反向。</p>
             <div class="letter-grid">
               <label><span>头部 <small>南瓜体</small></span><select data-slot="top" aria-label="头部字母"></select></label>
               <label><span>躯干 <small>拉长体</small></span><select data-slot="body" aria-label="躯干字母"></select></label>
@@ -45,7 +45,7 @@
           </div>
           <div class="setting-section motion-settings">
             <div class="parameter"><div class="parameter-head"><label for="period-range">往返周期</label><output id="frequency">1.49 次 / 秒</output></div><div class="range-number"><input id="period-range" type="range" min=".2" max="5" step=".01" value=".67"><label class="unit-input"><input id="period-number" type="number" min=".2" max="5" step=".01" value=".67" aria-label="周期秒数"><span>s</span></label></div></div>
-            <div class="parameter"><div class="parameter-head"><label for="stroke-range">伸缩行程</label><span class="muted">底座固定，全收回</span></div><div class="range-number"><input id="stroke-range" type="range" min="0" max="200" step="1" value="160"><label class="unit-input"><input id="stroke-number" type="number" min="0" max="200" step="1" value="160" aria-label="行程百分比"><span>%</span></label></div></div>
+            <div class="parameter"><div class="parameter-head"><label for="stroke-range">伸缩行程</label><span id="stroke-hint" class="muted">底座固定，全收回</span></div><div class="range-number"><input id="stroke-range" type="range" min="0" max="200" step="1" value="160"><label class="unit-input"><input id="stroke-number" type="number" min="0" max="200" step="1" value="160" aria-label="行程百分比"><span>%</span></label></div></div>
           </div>
           <div class="setting-section curve-section"><div class="section-heading"><h2>行程曲线</h2><button type="button" id="curve-presets" class="text-button">切换节奏</button></div><div id="curve-editor"></div></div>
         </section>

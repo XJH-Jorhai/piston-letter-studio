@@ -38,6 +38,7 @@ export function normalizeConfig(input={}){
   }
   const result={letters,period:clamp(finite(input.period,.67),.2,5),stroke:clamp(finite(input.stroke,160),0,200),background:input.background==='transparent'?'transparent':/^#[\da-f]{6}$/i.test(input.background||'')?input.background:'#fffbf2',curve:normalizeCurve(input.curve||DEFAULT_CURVE)};
   result.mode=input.mode==='minecraft'?'minecraft':'letters';
+  if(result.mode==='minecraft')result.stroke=100;
   if(input.assets)result.assets=clone(input.assets);
   return result;
 }
@@ -200,8 +201,9 @@ export function minecraftParts(frame){
 }
 function createMinecraftRenderer(canvas,images){
   canvas.width=canvas.height=768;
-  const ctx=canvas.getContext('2d'),tiles=new Map();
-  const project=([x,y,z])=>[390+130*x-70*z,475+28*x-145*y+58*z];
+  const tiles=new Map();
+  // Depth along the viewing ray, retained per vertex rather than sorting whole faces.
+  const project=([x,y,z])=>[390+130*x-70*z,475+28*x-145*y+58*z,x*70/130+y*(28*70/130+58)/145+z];
   function tile(name,shade=0,rotation=0,crop=[0,0,16,16]){
     const key=JSON.stringify([name,shade,rotation,crop]);if(tiles.has(key))return tiles.get(key);
     const [sx,sy,sw,sh]=crop,turned=Math.abs(rotation)%180===90,c=document.createElement('canvas');
@@ -217,12 +219,52 @@ function createMinecraftRenderer(canvas,images){
     if(face==='front')return tile(kind==='head'?'pistonTop':'pistonInner',shade);
     return tile('pistonSide',shade,face==='right'?-90:180,kind==='head'?[0,0,16,4]:[0,4,16,12]);
   }
-  return {type:'minecraft',dispose(){tiles.clear();},draw(frame){
-    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,768,768);ctx.imageSmoothingEnabled=false;
+  const gl=canvas.getContext('webgl2',{alpha:true,antialias:true,preserveDrawingBuffer:true});
+  let backend;
+  if(gl){
+    const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;};
+    const vertex=shader(gl.VERTEX_SHADER,'#version 300 es\nin vec3 a_position;in vec2 a_uv;out vec2 v_uv;void main(){v_uv=a_uv;gl_Position=vec4(a_position.x/384.-1.,1.-a_position.y/384.,-a_position.z/12.,1.);}');
+    const fragment=shader(gl.FRAGMENT_SHADER,'#version 300 es\nprecision highp float;in vec2 v_uv;uniform sampler2D u_texture;out vec4 color;void main(){color=texture(u_texture,v_uv);}');
+    const program=gl.createProgram();gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
+    gl.deleteShader(vertex);gl.deleteShader(fragment);gl.useProgram(program);
+    const buffer=gl.createBuffer(),textures=new Map(),vertices=new Float32Array(30);
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+    const position=gl.getAttribLocation(program,'a_position'),uv=gl.getAttribLocation(program,'a_uv');
+    gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,3,gl.FLOAT,false,20,0);
+    gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,20,12);
+    gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(0,0,0,0);gl.viewport(0,0,768,768);
+    backend={name:'webgl2',start(){gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);},face(points,tile){
+      let texture=textures.get(tile);
+      if(!texture){texture=gl.createTexture();textures.set(tile,texture);gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,tile);}else gl.bindTexture(gl.TEXTURE_2D,texture);
+      const [a,b,c]=points,d=b.map((v,i)=>v+c[i]-a[i]),corners=[[a,0,0],[b,1,0],[c,0,1],[c,0,1],[b,1,0],[d,1,1]];
+      corners.forEach(([p,u,v],i)=>vertices.set([...p,u,v],i*5));
+      gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.DYNAMIC_DRAW);gl.drawArrays(gl.TRIANGLES,0,6);
+    },finish(){},dispose(){for(const t of textures.values())gl.deleteTexture(t);gl.deleteBuffer(buffer);gl.deleteProgram(program);}};
+  }else{
+    // Same per-pixel depth test when WebGL is unavailable (including GIF/offline export).
+    const ctx=canvas.getContext('2d'),output=ctx.createImageData(768,768),zbuffer=new Float32Array(768*768),pixels=new Map();
+    backend={name:'cpu',start(){output.data.fill(0);zbuffer.fill(-Infinity);},face(points,tile){
+      let data=pixels.get(tile);if(!data){data=tile.getContext('2d').getImageData(0,0,tile.width,tile.height).data;pixels.set(tile,data);}
+      const [a,b,c]=points,d=b.map((v,i)=>v+c[i]-a[i]),dx=b[0]-a[0],dy=b[1]-a[1],ex=c[0]-a[0],ey=c[1]-a[1],det=dx*ey-dy*ex;
+      if(Math.abs(det)<1e-8)return;
+      const minX=Math.max(0,Math.floor(Math.min(a[0],b[0],c[0],d[0]))),maxX=Math.min(767,Math.ceil(Math.max(a[0],b[0],c[0],d[0])));
+      const minY=Math.max(0,Math.floor(Math.min(a[1],b[1],c[1],d[1]))),maxY=Math.min(767,Math.ceil(Math.max(a[1],b[1],c[1],d[1])));
+      for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
+        const px=x+.5-a[0],py=y+.5-a[1],u=(px*ey-py*ex)/det,v=(dx*py-dy*px)/det;
+        if(u<0||u>=1||v<0||v>=1)continue;
+        const z=a[2]+u*(b[2]-a[2])+v*(c[2]-a[2]),index=y*768+x;
+        if(z<zbuffer[index])continue;zbuffer[index]=z;
+        const source=(Math.min(tile.height-1,Math.floor(v*tile.height))*tile.width+Math.min(tile.width-1,Math.floor(u*tile.width)))*4;
+        output.data.set(data.subarray(source,source+4),index*4);
+      }
+    },finish(){ctx.putImageData(output,0,0);},dispose(){pixels.clear();}};
+  }
+  return {type:'minecraft',backend:backend.name,dispose(){backend.dispose();tiles.clear();},draw(frame){
+    backend.start();
     const faces=[];
     function face(part,name,a,b,c){
-      const center=a.map((v,i)=>(b[i]+c[i])/2),depth=center[0]*70/130+center[1]*(28*70/130+58)/145+center[2];
-      faces.push({part,name,points:[a,b,c].map(project),depth});
+      faces.push({part,name,points:[a,b,c].map(project)});
     }
     for(const p of minecraftParts(frame)){
       const {x,y,z,w,h,d}=p;
@@ -230,13 +272,8 @@ function createMinecraftRenderer(canvas,images){
       face(p,'right',[x+w,y+h,z+d],[x+w,y+h,z],[x+w,y,z+d]);
       face(p,'top',[x,y+h,z],[x+w,y+h,z],[x,y+h,z+d]);
     }
-    faces.sort((a,b)=>a.depth-b.depth);
-    for(const f of faces){
-      const [a,b,c]=f.points,t=material(f.part.material,f.name);
-      ctx.setTransform((b[0]-a[0])/t.width,(b[1]-a[1])/t.width,(c[0]-a[0])/t.height,(c[1]-a[1])/t.height,a[0],a[1]);
-      ctx.drawImage(t,0,0);
-    }
-    ctx.setTransform(1,0,0,1,0,0);
+    for(const f of faces)backend.face(f.points,material(f.part.material,f.name));
+    backend.finish();
   }};
 }
 

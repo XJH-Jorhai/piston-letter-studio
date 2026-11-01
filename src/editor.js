@@ -11,6 +11,8 @@ function persist(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localSt
 function sync(){
   for(const slot of ['top','body','left','right'])document.querySelector('[data-slot="'+slot+'"]').value=state.letters[slot];
   const minecraft=state.mode==='minecraft';
+  for(const suffix of ['range','number'])$('stroke-'+suffix).disabled=minecraft;
+  $('stroke-hint').textContent=minecraft?'原版固定 100% · 一格':'底座固定，全收回';
   document.querySelector('.letter-grid').hidden=minecraft;$('minecraft-note').hidden=!minecraft;
   $('minecraft-preset').setAttribute('aria-pressed',String(minecraft));
   document.querySelectorAll('[data-letters]').forEach(button=>button.setAttribute('aria-pressed',String(!minecraft&&button.dataset.letters===[state.letters.left,state.letters.right,state.letters.body,state.letters.top].join(''))));
