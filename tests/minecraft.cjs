@@ -36,7 +36,7 @@ const out=path.resolve(__dirname,'../.test-results'),base=process.env.BASE_URL||
   const snapshot=await embed.evaluate(()=>{const a=document.querySelector('piston-letters');a.pause();a.renderAt(.5);return {mode:a.config.mode,stroke:a.config.stroke,assets:Object.values(a.config.assets).every(x=>x.src.startsWith('data:image/png')),alpha:a.captureFrame(.5,{size:16}).getContext('2d').getImageData(0,0,1,1).data[3]};});
   assert.deepEqual(snapshot,{mode:'minecraft',stroke:100,assets:true,alpha:0});await offline.close();
   const jsonWait=page.waitForEvent('download');await page.click('#save-config');const json=await jsonWait;const jsonFile=path.join(out,'minecraft.json');await json.saveAs(jsonFile);
-  await page.click('[data-letters=DDMC]');await page.waitForFunction(()=>pistonStudio.animation._renderer.type!=='minecraft');
+  await page.click('[data-letters=OOOO]');await page.waitForFunction(()=>pistonStudio.animation._renderer.type!=='minecraft');
   assert.equal(await page.locator('.letter-grid').isVisible(),true);
   assert.equal(await page.locator('#stroke-number').isEnabled(),true);
   await page.fill('#stroke-number','134');

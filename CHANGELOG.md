@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2
+
+- Renamed the page to “随时随地，即刻开凿” and the settings section to “参数设置”.
+- Replaced GTMC/DDMC editor presets with OOOO; kept the MC original preset and configurable A–Z slots.
+- Removed the requested helper captions while retaining controls, curve-handle proxies and texture attribution.
+
 ## 1.1.1
 
 - Fixed Minecraft travel to 100% (one block) in the component, editor, imported configurations and exports.

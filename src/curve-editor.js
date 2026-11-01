@@ -6,7 +6,7 @@ export class CurveEditor{
     this.root=root;this.points=normalizeCurve(points);this.onChange=onChange;this.onScrub=onScrub;this.selected=Math.min(2,this.points.length-1);this.target='anchor';this.phase=0;this.drag=null;
     this.g={w:400,h:250,l:45,r:18,t:20,b:38};
     root.classList.add('curve-editor');
-    root.innerHTML='<svg role="img" aria-label="一个完整周期的行程曲线。方点为关键帧，圆点为可独立拖动的手柄。"></svg><p class="curve-help">拖方点改时机，拖圆点改缓动；双击空白处加点。</p><p class="curve-help proxy-note" hidden>短手柄已外移，虚线指向实际位置。</p><div class="curve-fields"><label>关键帧<select data-field="node" aria-label="选择关键帧"></select></label><label>编辑对象<select data-field="target"><option value="anchor">关键帧</option><option value="in">左手柄</option><option value="out">右手柄</option></select></label><label>周期时间 (%)<input data-field="time" type="number" min="0" max="100" step=".1"></label><label>行程 (%)<input data-field="value" type="number" min="0" max="100" step=".1"></label></div><div class="curve-actions"><button type="button" data-action="add">加点</button><button type="button" data-action="expand">展开手柄</button><button type="button" data-action="flat">水平切线</button><button type="button" data-action="delete">删除点</button></div>';
+    root.innerHTML='<svg role="img" aria-label="一个完整周期的行程曲线。方点为关键帧，圆点为可独立拖动的手柄。"></svg><div class="curve-fields"><label>关键帧<select data-field="node" aria-label="选择关键帧"></select></label><label>编辑对象<select data-field="target"><option value="anchor">关键帧</option><option value="in">左手柄</option><option value="out">右手柄</option></select></label><label>周期时间 (%)<input data-field="time" type="number" min="0" max="100" step=".1"></label><label>行程 (%)<input data-field="value" type="number" min="0" max="100" step=".1"></label></div><div class="curve-actions"><button type="button" data-action="add">加点</button><button type="button" data-action="expand">展开手柄</button><button type="button" data-action="flat">水平切线</button><button type="button" data-action="delete">删除点</button></div>';
     this.svg=root.querySelector('svg');this.field=n=>root.querySelector('[data-field="'+n+'"]');
     this.field('node').addEventListener('change',e=>{this.selected=Number(e.target.value);this.target='anchor';this.sync();this.draw();});
     this.field('target').addEventListener('change',e=>{this.target=e.target.value;this.sync();this.draw();});
@@ -78,15 +78,15 @@ export class CurveEditor{
     let d='M '+x(this.points[0].t)+' '+y(this.points[0].v);
     for(let i=0;i<this.points.length-1;i++){const a=this.points[i],b=this.points[i+1];d+=' C '+x(a.out.t)+' '+y(a.out.v)+' '+x(b.in.t)+' '+y(b.in.v)+' '+x(b.t)+' '+y(b.v);}
     html+='<path class="curve-path" d="'+d+'"/>';
-    let handles='',other=null,proxy=false;const p=this.points[this.selected];
-    for(const kind of ['in','out'])if(p[kind]){const h=this.displayHandle(p,p[kind],kind,other);other=h;proxy||=h.proxy;
+    let handles='',other=null;const p=this.points[this.selected];
+    for(const kind of ['in','out'])if(p[kind]){const h=this.displayHandle(p,p[kind],kind,other);other=h;
       html+='<line class="curve-tangent" x1="'+x(p.t)+'" y1="'+y(p.v)+'" x2="'+h.rx+'" y2="'+h.ry+'" pointer-events="none"/>';
       if(h.proxy)handles+='<line class="curve-proxy" x1="'+h.rx+'" y1="'+h.ry+'" x2="'+h.x+'" y2="'+h.y+'"/>';
       handles+='<circle class="curve-handle '+(this.target===kind?'curve-selected':'')+'" cx="'+h.x+'" cy="'+h.y+'" r="5.5" pointer-events="none"/><circle class="curve-hit" data-node="'+this.selected+'" data-kind="'+kind+'" cx="'+h.x+'" cy="'+h.y+'" r="16" fill="transparent"/>';
     }
     for(let i=0;i<this.points.length;i++){const p=this.points[i];html+='<rect class="curve-anchor '+(i===this.selected&&this.target==='anchor'?'curve-selected':'')+'" x="'+(x(p.t)-3.5)+'" y="'+(y(p.v)-3.5)+'" width="7" height="7"/><rect class="curve-hit" data-node="'+i+'" data-kind="anchor" x="'+(x(p.t)-16)+'" y="'+(y(p.v)-16)+'" width="32" height="32" fill="transparent"/>';}
     html+=handles+'<line class="curve-head-line" data-playhead y1="'+y(1)+'" y2="'+y(0)+'"/><circle class="curve-head-dot" data-playdot r="4"/>';
-    this.svg.innerHTML=html;this.root.querySelector('.proxy-note').hidden=!proxy;this.setPhase(this.phase);
+    this.svg.innerHTML=html;this.setPhase(this.phase);
   }
   setPhase(phase){this.phase=clamp(phase);const line=this.svg.querySelector('[data-playhead]'),dot=this.svg.querySelector('[data-playdot]');if(line){line.setAttribute('x1',this.x(this.phase));line.setAttribute('x2',this.x(this.phase));}if(dot){dot.setAttribute('cx',this.x(this.phase));dot.setAttribute('cy',this.y(sampleCurve(this.points,this.phase)));}}
 }

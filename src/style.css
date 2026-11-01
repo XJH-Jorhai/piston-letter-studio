@@ -19,3 +19,5 @@
 .model-presets button[aria-pressed="true"]{background:var(--ink,#162637);color:#fffbf2}
 .model-note{font-size:13px;line-height:1.8;margin:0;padding:14px;border:1px solid #d8d6ce;border-radius:8px;background:#fffbf2}
 .letter-grid[hidden],.model-note[hidden]{display:none}
+
+.preview-caption,.config-bar{justify-content:flex-end}

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="用三套 A–Z 字母、活塞和可编辑行程曲线制作动画，导出独立网页组件或 GIF。">
   <meta name="theme-color" content="#f7f5ef">
-  <title>Piston Letter Studio · 字母动画工作台</title>
+  <title>随时随地，即刻开凿</title>
   <link rel="stylesheet" href="./src/style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
     <a class="github-link" href="https://github.com/XJH-Jorhai/piston-letter-studio" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
   </header>
   <main>
-    <section class="intro"><div><p class="eyebrow">LETTERS, WITH A LITTLE MECHANICS.</p><h1>给字母，一点动作。</h1><p>选字母，调曲线。把你的节奏带到任何网页。</p></div><div class="intro-note"><span class="live-dot"></span> 本地渲染 · 无需上传</div></section>
+    <section class="intro"><div><p class="eyebrow">LETTERS, WITH A LITTLE MECHANICS.</p><h1>随时随地，即刻开凿</h1><p>选字母，调曲线。把你的节奏带到任何网页。</p></div><div class="intro-note"><span class="live-dot"></span> 本地渲染 · 无需上传</div></section>
     <nav class="tabs" aria-label="工作区" role="tablist">
       <button type="button" id="tab-studio" role="tab" aria-selected="true" aria-controls="panel-studio">动画编辑器</button>
       <button type="button" id="tab-library" role="tab" aria-selected="false" aria-controls="panel-library">字母素材库 <span id="asset-count">78</span></button>
@@ -26,15 +26,14 @@
           <div class="panel-top"><span class="section-label">LIVE PREVIEW</span><span id="render-state" class="status-text" role="status">加载字母中…</span></div>
           <div id="stage" class="stage"><piston-letters id="animation" aria-label="活塞字母动画"></piston-letters></div>
           <div class="playbar"><button type="button" id="play" class="round-button" aria-label="暂停动画">Ⅱ</button><input id="scrub" type="range" min="0" max="100" step=".1" value="0" aria-label="播放进度"><output id="phase">0%</output></div>
-          <div class="preview-caption"><span id="motion-caption">G / T 同步，M 反向联动</span><label>背景 <select id="background"><option value="#fffbf2">米白</option><option value="transparent">透明</option><option value="#162637">深色</option></select></label></div>
+          <div class="preview-caption"><label>背景 <select id="background"><option value="#fffbf2">米白</option><option value="transparent">透明</option><option value="#162637">深色</option></select></label></div>
           <div class="export-actions"><button type="button" id="export-html" class="button primary">导出网页动画 <span aria-hidden="true">↗</span></button><button type="button" id="export-gif" class="button">下载 GIF <span aria-hidden="true">↓</span></button><button type="button" id="cancel-export" class="button subtle" hidden>取消</button></div>
           <div id="export-progress" class="export-progress" hidden><progress max="1" value="0" aria-label="GIF 导出进度"></progress><span></span></div>
-          <p class="export-hint">网页动画是独立 HTML 文件，可离线播放或通过 iframe 嵌入。</p>
         </section>
         <section class="settings-panel" aria-label="动画设置">
           <div class="setting-section">
-            <div class="section-heading"><h2>字母与原版方块</h2></div>
-            <div class="preset-pair model-presets" role="group" aria-label="造型预设"><button type="button" data-letters="GTMC" aria-pressed="true">GTMC</button><button type="button" data-letters="DDMC" aria-pressed="false">DDMC</button><button type="button" id="minecraft-preset" aria-pressed="false">MC 原版</button></div>
+            <div class="section-heading"><h2>参数设置</h2></div>
+            <div class="preset-pair model-presets" role="group" aria-label="造型预设"><button type="button" data-letters="OOOO" aria-pressed="true">OOOO</button><button type="button" id="minecraft-preset" aria-pressed="false">MC 原版</button></div>
             <p id="minecraft-note" class="model-note" hidden>雕刻南瓜 × 1 · 铁块 × 4 · 固定活塞 × 3<br>三格高，行程固定 100%（一格）。左右铁块同步，中间反向。<br><small>原版纹理：Minecraft Java 1.21.4 · Mojang / Microsoft<br>提取镜像：<a href="https://github.com/InventivetalentDev/minecraft-assets/tree/1.21.4/assets/minecraft/textures/block" target="_blank" rel="noopener">InventivetalentDev/minecraft-assets ↗</a></small></p>
             <div class="letter-grid">
               <label><span>头部 <small>南瓜体</small></span><select data-slot="top" aria-label="头部字母"></select></label>
@@ -50,7 +49,7 @@
           <div class="setting-section curve-section"><div class="section-heading"><h2>行程曲线</h2><button type="button" id="curve-presets" class="text-button">切换节奏</button></div><div id="curve-editor"></div></div>
         </section>
       </div>
-      <div class="config-bar"><span>把造型和节奏一起保存。</span><div><button class="text-button" id="save-config" type="button">保存配置 JSON</button><button class="text-button" id="load-config" type="button">导入配置</button><input id="config-file" type="file" accept=".json,application/json" hidden></div></div>
+      <div class="config-bar"><div><button class="text-button" id="save-config" type="button">保存配置 JSON</button><button class="text-button" id="load-config" type="button">导入配置</button><input id="config-file" type="file" accept=".json,application/json" hidden></div></div>
     </section>
     <section id="panel-library" role="tabpanel" aria-labelledby="tab-library" hidden>
       <div class="library-heading"><div><h2>一套造型，三种字母性格。</h2><p>每种样式都包含完整 A–Z，透明 PNG 可单独下载。</p></div><div class="style-tabs" role="group" aria-label="素材风格"><button type="button" data-style="compact" aria-pressed="true">短体金属</button><button type="button" data-style="tall" aria-pressed="false">拉长金属</button><button type="button" data-style="pumpkin" aria-pressed="false">南瓜造型</button></div></div>

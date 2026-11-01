@@ -19,7 +19,6 @@ function sync(){
   for(const n of ['period','stroke']){$(n+'-range').value=state[n];$(n+'-number').value=n==='period'?state[n].toFixed(2):state[n];}
   $('background').value=state.background;$('stage').classList.toggle('transparent',state.background==='transparent');
   $('frequency').textContent=(1/state.period).toFixed(2)+' 次 / 秒';
-  $('motion-caption').textContent=minecraft?'左右铁块同步，中央铁块反向联动':state.letters.left+' / '+state.letters.right+' 同步，'+state.letters.body+' 反向联动';
   $('embed-code').textContent=embedSnippet(state);
   $('play').textContent=animation.playing?'Ⅱ':'▶';$('play').setAttribute('aria-label',animation.playing?'暂停动画':'播放动画');
 }

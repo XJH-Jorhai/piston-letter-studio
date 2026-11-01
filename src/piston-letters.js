@@ -10,7 +10,7 @@ export const DEFAULT_CURVE = [
   {t:.8256814418694911,v:1,in:{t:.7993994003687148,v:1},out:{t:.9096758915827823,v:1}},
   {t:1,v:0,in:{t:.9096758915827823,v:0},out:null}
 ];
-export const DEFAULT_CONFIG = {mode:'letters',letters:{top:'C',body:'M',left:'G',right:'T'},period:.67,stroke:160,background:'#fffbf2',curve:DEFAULT_CURVE};
+export const DEFAULT_CONFIG = {mode:'letters',letters:{top:'O',body:'O',left:'O',right:'O'},period:.67,stroke:160,background:'#fffbf2',curve:DEFAULT_CURVE};
 export const MINECRAFT_TEXTURES={iron:'iron_block',pumpkinFront:'carved_pumpkin',pumpkinSide:'pumpkin_side',pumpkinTop:'pumpkin_top',pistonTop:'piston_top',pistonSide:'piston_side',pistonBottom:'piston_bottom',pistonInner:'piston_inner'};
 const clone = value => JSON.parse(JSON.stringify(value));
 function finite(value,fallback){return Number.isFinite(Number(value))?Number(value):fallback;}
