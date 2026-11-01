@@ -127,7 +127,7 @@ manifest.json 保存尺寸和位于实心笔画上的连接点。更换字母时
 
 GIF 编码使用 [gifenc 1.0.3](https://github.com/mattdesl/gifenc)，遵循 MIT 许可，原许可见 vendor/gifenc.LICENSE.md。其他运行时功能无第三方框架依赖。
 
-Minecraft 原版纹理来自 Java Edition 1.21.4 的提取镜像，归 Mojang / Microsoft 所有；
+Minecraft 原版纹理来自 [InventivetalentDev/minecraft-assets](https://github.com/InventivetalentDev/minecraft-assets/tree/1.21.4/assets/minecraft/textures/block) 的 Java Edition 1.21.4 提取镜像，归 Mojang / Microsoft 所有；
 详见 [原版材质来源](assets/minecraft/README.md)。
 
 GitHub Pages 可直接从 main 分支根目录部署，.nojekyll 已提供。dist/ 是用于其他静态托管的构建输出。
