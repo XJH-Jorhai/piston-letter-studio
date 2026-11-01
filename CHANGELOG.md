@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 — Generator freeze
+
+- Set the approved minecraft-original-0.94s.json as the generator default: Minecraft mode, 0.94s cycle, fixed 100% travel, transparent background and the exact supplied curve.
+- Namespaced editor storage for this release so previous defaults do not override the approved configuration on its first visit.
+- Enabled music autoplay when permitted, with a one-time first-click/keyboard fallback when the browser requires user activation. Manual pause remains respected.
+- Preserved the OOOO preset, A–Z libraries, editable curves, GIF and offline HTML export.
+- Froze the generator feature scope at this release.
+
 ## 1.1.3
 
 - Added the user-provided Sam Gellaitry — Assumptions audio with native playback, seeking and volume controls.

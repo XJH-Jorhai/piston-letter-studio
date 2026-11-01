@@ -25,7 +25,7 @@ const out=path.resolve(__dirname,'../.test-results'),base=process.env.BASE_URL||
   await page.screenshot({path:path.join(out,'minecraft-desktop.png'),fullPage:true});
   await page.selectOption('#background','transparent');
   const gifWait=page.waitForEvent('download');await page.click('#export-gif');const gif=await gifWait;
-  assert.equal(gif.suggestedFilename(),'minecraft-original-0.67s.gif');await gif.saveAs(path.join(out,'minecraft.gif'));
+  assert.equal(gif.suggestedFilename(),'minecraft-original-0.94s.gif');await gif.saveAs(path.join(out,'minecraft.gif'));
   assert.equal(fs.readFileSync(path.join(out,'minecraft.gif')).subarray(0,6).toString(),'GIF89a');
   await page.waitForFunction(()=>!document.getElementById('export-html').disabled);
   const htmlWait=page.waitForEvent('download');await page.click('#export-html');const html=await htmlWait;

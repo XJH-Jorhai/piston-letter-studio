@@ -1,13 +1,14 @@
-import {DEFAULT_CONFIG,ALPHABET,normalizeConfig,getManifest} from './piston-letters.js';
+import {ALPHABET,normalizeConfig,getManifest} from './piston-letters.js';
+import {DEFAULT_CONFIG} from './default-config.js';
 import {CurveEditor} from './curve-editor.js';
 import {download,exportGif,exportHtml,embedSnippet} from './export.js';
 const $=id=>document.getElementById(id),animation=$('animation');
 let state,curve,manifest,saveTimer,toastTimer,exporting=false,exportAbort,presetIndex=0;
-try{state=normalizeConfig(JSON.parse(localStorage.getItem('piston-letter-studio:config'))||DEFAULT_CONFIG);}catch{state=normalizeConfig();}
+try{state=normalizeConfig(JSON.parse(localStorage.getItem('piston-letter-studio:config:v1.2.0'))||DEFAULT_CONFIG);}catch{state=normalizeConfig(DEFAULT_CONFIG);}
 const requestedMode=new URLSearchParams(location.search).get('mode');
 if(['letters','minecraft'].includes(requestedMode))state.mode=requestedMode;
 const notify=message=>{$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);};
-function persist(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('piston-letter-studio:config',JSON.stringify(state));}catch{}},250);}
+function persist(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('piston-letter-studio:config:v1.2.0',JSON.stringify(state));}catch{}},250);}
 function sync(){
   for(const slot of ['top','body','left','right'])document.querySelector('[data-slot="'+slot+'"]').value=state.letters[slot];
   const minecraft=state.mode==='minecraft';

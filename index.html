@@ -17,7 +17,7 @@
     <section class="intro"><div><p class="eyebrow">LETTERS, WITH A LITTLE MECHANICS.</p><h1>随时随地，即刻开凿</h1><p>选字母，调曲线。把你的节奏带到任何网页。</p></div><div class="intro-note"><span class="live-dot"></span> 本地渲染 · 无需上传</div></section>
     <section class="music-bar" aria-label="音乐播放器">
       <div class="music-track"><span class="music-icon" aria-hidden="true">♫</span><div><strong>Assumptions</strong><p>Sam Gellaitry</p></div></div>
-      <audio id="music-player" controls preload="metadata" src="./assets/audio/sam-gellaitry-assumptions.mp3" aria-label="Sam Gellaitry — Assumptions">你的浏览器不支持音频播放。<a href="./assets/audio/sam-gellaitry-assumptions.mp3">下载音频</a></audio>
+      <audio id="music-player" controls autoplay preload="metadata" src="./assets/audio/sam-gellaitry-assumptions.mp3" aria-label="Sam Gellaitry — Assumptions">你的浏览器不支持音频播放。<a href="./assets/audio/sam-gellaitry-assumptions.mp3">下载音频</a></audio>
     </section>
     <nav class="tabs" aria-label="工作区" role="tablist">
       <button type="button" id="tab-studio" role="tab" aria-selected="true" aria-controls="panel-studio">动画编辑器</button>
@@ -73,6 +73,7 @@
   </main>
   <footer><span>PISTON LETTER STUDIO</span><span>三套字母 + MC 原版 · <a href="./assets/minecraft/README.md" target="_blank" rel="noopener">原版材质来源</a></span></footer>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <script type="module" src="./src/editor.js"></script>
+  <script type="module" src="./src/audio-player.js?v=1.2.0"></script>
+  <script type="module" src="./src/editor.js?v=1.2.0"></script>
 </body>
 </html>

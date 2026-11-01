@@ -2,6 +2,18 @@
 
 一个可以替换字母、编辑行程曲线、导出网页动画和 GIF 的纯前端工作台。
 
+## 生成器定版 v1.2.0
+
+生成器功能在此版本定版。默认使用用户确认的
+[minecraft-original-0.94s.json](assets/presets/minecraft-original-0.94s.json)：
+MC 原版、0.94 秒周期、100% 行程、透明背景，以及文件中完整的非对称行程曲线。
+页面默认启动动画并尝试播放音乐；受浏览器有声自动播放策略限制时，在首次点击或按 Enter / 空格后启动音乐。
+手动暂停后不会被后续页面操作重新播放。
+
+此版本首次打开采用上述默认值，之后仍会记住本机编辑；旧版本的本机配置不覆盖本次定版默认值。
+导出的独立组件保留当前配置；未传配置的裸组件维持 OOOO 默认值。
+正式版本：[v1.2.0](https://github.com/XJH-Jorhai/piston-letter-studio/releases/tag/v1.2.0)。
+
 - 演示：<https://xjh-jorhai.github.io/piston-letter-studio/>
 - 最小双实例嵌入示例：<https://xjh-jorhai.github.io/piston-letter-studio/examples/embed.html>
 - 三套完整 A–Z：短体金属、拉长金属、南瓜造型，共 78 个透明 PNG。
@@ -10,7 +22,7 @@
 - 可编辑完整周期的 Bézier 曲线，独立控制伸出、停留、收回。
 - GIF 在浏览器本地生成和下载，无需服务器上传或聊天代理。
 - 独立 HTML 导出内嵌所选素材和组件，可离线播放。
-- 页面播放器使用用户提供的 “Sam Gellaitry - Assumptions.mp3”，支持播放、暂停、进度和音量控制，点击后播放。音源位于 assets/audio/，不加入字母组件的导出文件。
+- 页面播放器使用用户提供的 “Sam Gellaitry - Assumptions.mp3”，支持自动播放、暂停、进度和音量控制；有声自动播放遵守浏览器策略。音源位于 assets/audio/，不加入字母组件的导出文件。
 - 新增 [MC 原版预设](https://xjh-jorhai.github.io/piston-letter-studio/?mode=minecraft)：雕刻南瓜、四个 T 形铁块和三个固定活塞，原版 16×16 像素纹理。
 
 ## MC 原版

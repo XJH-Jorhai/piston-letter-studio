@@ -5,9 +5,14 @@ fs.mkdirSync(out,{recursive:true});
 (async()=>{
  const options={headless:true,args:['--enable-unsafe-swiftshader']},edge='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';if(process.platform==='win32'&&fs.existsSync(edge))options.executablePath=edge;
  const browser=await chromium.launch(options),page=await browser.newPage({viewport:{width:1440,height:1100},acceptDownloads:true}),errors=[];
- page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>{if(!r.url().startsWith('blob:'))errors.push(r.failure().errorText+': '+r.url());});
+ page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>{
+   // Starting playback can cancel the metadata-only media range request.
+   if(r.resourceType()==='media'&&r.failure().errorText==='net::ERR_ABORTED')return;
+   if(!r.url().startsWith('blob:'))errors.push(r.failure().errorText+': '+r.url());
+ });
  await page.goto(base);await page.waitForFunction(()=>window.pistonStudio?.animation._renderer);await page.evaluate(()=>pistonStudio.animation.pause());
- const initial=await page.evaluate(()=>pistonStudio.config);assert.equal(initial.period,.67);assert.equal(initial.stroke,160);
+ assert.equal(await page.evaluate(()=>pistonStudio.config.mode),'minecraft');await page.click('[data-letters=OOOO]');await page.evaluate(()=>pistonStudio.animation.ready);
+ const initial=await page.evaluate(()=>pistonStudio.config);assert.equal(initial.period,.94);assert.equal(initial.stroke,100);
  await page.screenshot({path:path.join(out,'studio-desktop.png'),fullPage:true});
  for(const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'){
    await page.evaluate(async l=>{const cfg=pistonStudio.config;cfg.letters={top:l,body:l,left:l,right:l};await pistonStudio.setConfig(cfg);pistonStudio.animation.renderAt(.55);},letter);
@@ -20,7 +25,7 @@ fs.mkdirSync(out,{recursive:true});
  assert.ok((await page.evaluate(()=>pistonStudio.curve.points[3].out.v))<old-.02);
  await page.evaluate(async c=>pistonStudio.setConfig(c),initial);
  await page.selectOption('#background','transparent');await page.evaluate(()=>pistonStudio.animation.ready);
- const gifDownload=page.waitForEvent('download');await page.click('#export-gif');await page.fill('#period-number','.85');const gif=await gifDownload;assert.ok(gif.suggestedFilename().includes('0.67s'));await gif.saveAs(path.join(out,'current.gif'));
+ const gifDownload=page.waitForEvent('download');await page.click('#export-gif');await page.fill('#period-number','.85');const gif=await gifDownload;assert.ok(gif.suggestedFilename().includes('0.94s'));await gif.saveAs(path.join(out,'current.gif'));
  assert.equal(fs.readFileSync(path.join(out,'current.gif')).subarray(0,6).toString(),'GIF89a');await page.waitForFunction(()=>!document.getElementById('export-gif').disabled);
  await page.evaluate(async c=>pistonStudio.setConfig({...c,background:'transparent'}),initial);
  const htmlDownload=page.waitForEvent('download');await page.click('#export-html');const html=await htmlDownload;const htmlPath=path.join(out,'standalone.html');await html.saveAs(htmlPath);
