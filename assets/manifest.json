@@ -1,0 +1,733 @@
+{
+  "version": 1,
+  "styles": {
+    "compact": {
+      "A": {
+        "src": "assets/letters/compact/A.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          173,
+          53
+        ]
+      },
+      "B": {
+        "src": "assets/letters/compact/B.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          168,
+          48
+        ]
+      },
+      "C": {
+        "src": "assets/letters/compact/C.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          166,
+          47
+        ]
+      },
+      "D": {
+        "src": "assets/letters/compact/D.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          182,
+          47
+        ]
+      },
+      "E": {
+        "src": "assets/letters/compact/E.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          167,
+          47
+        ]
+      },
+      "F": {
+        "src": "assets/letters/compact/F.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          169,
+          49
+        ]
+      },
+      "G": {
+        "src": "assets/letters/compact/G.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          186,
+          38
+        ]
+      },
+      "H": {
+        "src": "assets/letters/compact/H.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          174,
+          48
+        ]
+      },
+      "I": {
+        "src": "assets/letters/compact/I.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          159,
+          49
+        ]
+      },
+      "J": {
+        "src": "assets/letters/compact/J.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          168,
+          49
+        ]
+      },
+      "K": {
+        "src": "assets/letters/compact/K.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          174,
+          48
+        ]
+      },
+      "L": {
+        "src": "assets/letters/compact/L.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          127,
+          48
+        ]
+      },
+      "M": {
+        "src": "assets/letters/compact/M.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          174,
+          60
+        ]
+      },
+      "N": {
+        "src": "assets/letters/compact/N.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          174,
+          48
+        ]
+      },
+      "O": {
+        "src": "assets/letters/compact/O.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          173,
+          51
+        ]
+      },
+      "P": {
+        "src": "assets/letters/compact/P.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          175,
+          48
+        ]
+      },
+      "Q": {
+        "src": "assets/letters/compact/Q.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          173,
+          48
+        ]
+      },
+      "R": {
+        "src": "assets/letters/compact/R.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          173,
+          51
+        ]
+      },
+      "S": {
+        "src": "assets/letters/compact/S.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          173,
+          51
+        ]
+      },
+      "T": {
+        "src": "assets/letters/compact/T.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          192,
+          38
+        ]
+      },
+      "U": {
+        "src": "assets/letters/compact/U.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          173,
+          50
+        ]
+      },
+      "V": {
+        "src": "assets/letters/compact/V.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          174,
+          61
+        ]
+      },
+      "W": {
+        "src": "assets/letters/compact/W.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          174,
+          63
+        ]
+      },
+      "X": {
+        "src": "assets/letters/compact/X.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          178,
+          55
+        ]
+      },
+      "Y": {
+        "src": "assets/letters/compact/Y.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          172,
+          54
+        ]
+      },
+      "Z": {
+        "src": "assets/letters/compact/Z.png",
+        "width": 242,
+        "height": 270,
+        "attachment": [
+          177,
+          49
+        ]
+      }
+    },
+    "tall": {
+      "A": {
+        "src": "assets/letters/tall/A.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          237,
+          73
+        ]
+      },
+      "B": {
+        "src": "assets/letters/tall/B.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          230,
+          74
+        ]
+      },
+      "C": {
+        "src": "assets/letters/tall/C.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          226,
+          72
+        ]
+      },
+      "D": {
+        "src": "assets/letters/tall/D.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          231,
+          73
+        ]
+      },
+      "E": {
+        "src": "assets/letters/tall/E.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          225,
+          71
+        ]
+      },
+      "F": {
+        "src": "assets/letters/tall/F.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          224,
+          74
+        ]
+      },
+      "G": {
+        "src": "assets/letters/tall/G.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          230,
+          72
+        ]
+      },
+      "H": {
+        "src": "assets/letters/tall/H.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          233,
+          73
+        ]
+      },
+      "I": {
+        "src": "assets/letters/tall/I.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          220,
+          73
+        ]
+      },
+      "J": {
+        "src": "assets/letters/tall/J.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          233,
+          72
+        ]
+      },
+      "K": {
+        "src": "assets/letters/tall/K.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          236,
+          72
+        ]
+      },
+      "L": {
+        "src": "assets/letters/tall/L.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          189,
+          73
+        ]
+      },
+      "M": {
+        "src": "assets/letters/tall/M.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          196,
+          54
+        ]
+      },
+      "N": {
+        "src": "assets/letters/tall/N.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          237,
+          73
+        ]
+      },
+      "O": {
+        "src": "assets/letters/tall/O.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          228,
+          73
+        ]
+      },
+      "P": {
+        "src": "assets/letters/tall/P.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          229,
+          73
+        ]
+      },
+      "Q": {
+        "src": "assets/letters/tall/Q.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          231,
+          72
+        ]
+      },
+      "R": {
+        "src": "assets/letters/tall/R.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          235,
+          72
+        ]
+      },
+      "S": {
+        "src": "assets/letters/tall/S.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          228,
+          73
+        ]
+      },
+      "T": {
+        "src": "assets/letters/tall/T.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          232,
+          72
+        ]
+      },
+      "U": {
+        "src": "assets/letters/tall/U.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          234,
+          72
+        ]
+      },
+      "V": {
+        "src": "assets/letters/tall/V.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          240,
+          73
+        ]
+      },
+      "W": {
+        "src": "assets/letters/tall/W.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          250,
+          74
+        ]
+      },
+      "X": {
+        "src": "assets/letters/tall/X.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          243,
+          72
+        ]
+      },
+      "Y": {
+        "src": "assets/letters/tall/Y.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          236,
+          73
+        ]
+      },
+      "Z": {
+        "src": "assets/letters/tall/Z.png",
+        "width": 348,
+        "height": 437,
+        "attachment": [
+          232,
+          71
+        ]
+      }
+    },
+    "pumpkin": {
+      "A": {
+        "src": "assets/letters/pumpkin/A.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          249,
+          62
+        ]
+      },
+      "B": {
+        "src": "assets/letters/pumpkin/B.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          238,
+          62
+        ]
+      },
+      "C": {
+        "src": "assets/letters/pumpkin/C.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          255,
+          59
+        ]
+      },
+      "D": {
+        "src": "assets/letters/pumpkin/D.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          237,
+          61
+        ]
+      },
+      "E": {
+        "src": "assets/letters/pumpkin/E.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          238,
+          62
+        ]
+      },
+      "F": {
+        "src": "assets/letters/pumpkin/F.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          239,
+          60
+        ]
+      },
+      "G": {
+        "src": "assets/letters/pumpkin/G.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          243,
+          63
+        ]
+      },
+      "H": {
+        "src": "assets/letters/pumpkin/H.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          246,
+          62
+        ]
+      },
+      "I": {
+        "src": "assets/letters/pumpkin/I.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          228,
+          63
+        ]
+      },
+      "J": {
+        "src": "assets/letters/pumpkin/J.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          243,
+          62
+        ]
+      },
+      "K": {
+        "src": "assets/letters/pumpkin/K.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          242,
+          62
+        ]
+      },
+      "L": {
+        "src": "assets/letters/pumpkin/L.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          179,
+          62
+        ]
+      },
+      "M": {
+        "src": "assets/letters/pumpkin/M.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          250,
+          62
+        ]
+      },
+      "N": {
+        "src": "assets/letters/pumpkin/N.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          239,
+          62
+        ]
+      },
+      "O": {
+        "src": "assets/letters/pumpkin/O.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          239,
+          62
+        ]
+      },
+      "P": {
+        "src": "assets/letters/pumpkin/P.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          239,
+          61
+        ]
+      },
+      "Q": {
+        "src": "assets/letters/pumpkin/Q.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          237,
+          61
+        ]
+      },
+      "R": {
+        "src": "assets/letters/pumpkin/R.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          241,
+          61
+        ]
+      },
+      "S": {
+        "src": "assets/letters/pumpkin/S.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          243,
+          61
+        ]
+      },
+      "T": {
+        "src": "assets/letters/pumpkin/T.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          239,
+          62
+        ]
+      },
+      "U": {
+        "src": "assets/letters/pumpkin/U.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          242,
+          62
+        ]
+      },
+      "V": {
+        "src": "assets/letters/pumpkin/V.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          245,
+          63
+        ]
+      },
+      "W": {
+        "src": "assets/letters/pumpkin/W.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          251,
+          66
+        ]
+      },
+      "X": {
+        "src": "assets/letters/pumpkin/X.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          247,
+          63
+        ]
+      },
+      "Y": {
+        "src": "assets/letters/pumpkin/Y.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          245,
+          63
+        ]
+      },
+      "Z": {
+        "src": "assets/letters/pumpkin/Z.png",
+        "width": 348,
+        "height": 359,
+        "attachment": [
+          243,
+          62
+        ]
+      }
+    }
+  },
+  "piston": {
+    "src": "assets/piston-base.png",
+    "width": 140,
+    "height": 139,
+    "socket": [
+      57,
+      70
+    ]
+  },
+  "variants": {
+    "leftD": {
+      "src": "assets/variants/D-left.png",
+      "width": 242,
+      "height": 270,
+      "attachment": [
+        186,
+        38
+      ]
+    }
+  }
+}

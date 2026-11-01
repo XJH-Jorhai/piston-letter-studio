@@ -1,0 +1,38 @@
+{
+  "styles": {
+    "compact": {
+      "count": 26,
+      "canvas": [
+        242,
+        270
+      ]
+    },
+    "tall": {
+      "count": 26,
+      "canvas": [
+        348,
+        437
+      ]
+    },
+    "pumpkin": {
+      "count": 26,
+      "canvas": [
+        348,
+        359
+      ]
+    }
+  },
+  "generatedWith": "built-in image_gen",
+  "sourceAtlases": 6,
+  "pngCount": 78,
+  "allAnchorsOpaque": true,
+  "visualIdentityReview": "A-Z individually reviewed on contact sheets",
+  "preservedOriginals": [
+    "compact/G",
+    "compact/T",
+    "compact/D",
+    "tall/M",
+    "pumpkin/C"
+  ],
+  "variant": "leftD"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "piston-letter-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A configurable piston letter animation Web Component and curve editor.",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "node tests/browser.cjs"
+  },
+  "devDependencies": { "playwright": "1.62.1" }
+}

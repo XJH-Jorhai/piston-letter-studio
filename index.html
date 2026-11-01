@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="用三套 A–Z 字母、活塞和可编辑行程曲线制作动画，导出独立网页组件或 GIF。">
+  <meta name="theme-color" content="#f7f5ef">
+  <title>Piston Letter Studio · 字母动画工作台</title>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <a class="wordmark" href="./" aria-label="Piston Letter Studio 首页"><span class="brand-mark">P<span>↔</span></span><span>PISTON LETTER<span class="wordmark-sub">STUDIO / 字母动画工作台</span></span></a>
+    <a class="github-link" href="https://github.com/XJH-Jorhai/piston-letter-studio" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">LETTERS, WITH A LITTLE MECHANICS.</p><h1>给字母，一点动作。</h1><p>选字母，调曲线。把你的节奏带到任何网页。</p></div><div class="intro-note"><span class="live-dot"></span> 本地渲染 · 无需上传</div></section>
+    <nav class="tabs" aria-label="工作区" role="tablist">
+      <button type="button" id="tab-studio" role="tab" aria-selected="true" aria-controls="panel-studio">动画编辑器</button>
+      <button type="button" id="tab-library" role="tab" aria-selected="false" aria-controls="panel-library">字母素材库 <span id="asset-count">78</span></button>
+      <button type="button" id="tab-use" role="tab" aria-selected="false" aria-controls="panel-use">嵌入与用法</button>
+    </nav>
+    <section id="panel-studio" role="tabpanel" aria-labelledby="tab-studio">
+      <div class="studio-grid">
+        <section class="preview-panel" aria-label="动画预览">
+          <div class="panel-top"><span class="section-label">LIVE PREVIEW</span><span id="render-state" class="status-text" role="status">加载字母中…</span></div>
+          <div id="stage" class="stage"><piston-letters id="animation" aria-label="活塞字母动画"></piston-letters></div>
+          <div class="playbar"><button type="button" id="play" class="round-button" aria-label="暂停动画">Ⅱ</button><input id="scrub" type="range" min="0" max="100" step=".1" value="0" aria-label="播放进度"><output id="phase">0%</output></div>
+          <div class="preview-caption"><span id="motion-caption">G / T 同步，M 反向联动</span><label>背景 <select id="background"><option value="#fffbf2">米白</option><option value="transparent">透明</option><option value="#162637">深色</option></select></label></div>
+          <div class="export-actions"><button type="button" id="export-html" class="button primary">导出网页动画 <span aria-hidden="true">↗</span></button><button type="button" id="export-gif" class="button">下载 GIF <span aria-hidden="true">↓</span></button><button type="button" id="cancel-export" class="button subtle" hidden>取消</button></div>
+          <div id="export-progress" class="export-progress" hidden><progress max="1" value="0" aria-label="GIF 导出进度"></progress><span></span></div>
+          <p class="export-hint">网页动画是独立 HTML 文件，可离线播放或通过 iframe 嵌入。</p>
+        </section>
+        <section class="settings-panel" aria-label="动画设置">
+          <div class="setting-section">
+            <div class="section-heading"><h2>四个位置，任意字母</h2><div class="preset-pair"><button type="button" data-letters="GTMC">GTMC</button><button type="button" data-letters="DDMC">DDMC</button></div></div>
+            <div class="letter-grid">
+              <label><span>头部 <small>南瓜体</small></span><select data-slot="top" aria-label="头部字母"></select></label>
+              <label><span>躯干 <small>拉长体</small></span><select data-slot="body" aria-label="躯干字母"></select></label>
+              <label><span>左侧 <small>金属体</small></span><select data-slot="left" aria-label="左侧字母"></select></label>
+              <label><span>右侧 <small>金属体</small></span><select data-slot="right" aria-label="右侧字母"></select></label>
+            </div>
+          </div>
+          <div class="setting-section motion-settings">
+            <div class="parameter"><div class="parameter-head"><label for="period-range">往返周期</label><output id="frequency">1.49 次 / 秒</output></div><div class="range-number"><input id="period-range" type="range" min=".2" max="5" step=".01" value=".67"><label class="unit-input"><input id="period-number" type="number" min=".2" max="5" step=".01" value=".67" aria-label="周期秒数"><span>s</span></label></div></div>
+            <div class="parameter"><div class="parameter-head"><label for="stroke-range">伸缩行程</label><span class="muted">底座固定，全收回</span></div><div class="range-number"><input id="stroke-range" type="range" min="0" max="200" step="1" value="160"><label class="unit-input"><input id="stroke-number" type="number" min="0" max="200" step="1" value="160" aria-label="行程百分比"><span>%</span></label></div></div>
+          </div>
+          <div class="setting-section curve-section"><div class="section-heading"><h2>行程曲线</h2><button type="button" id="curve-presets" class="text-button">切换节奏</button></div><div id="curve-editor"></div></div>
+        </section>
+      </div>
+      <div class="config-bar"><span>把这组字母和节奏一起保存。</span><div><button class="text-button" id="save-config" type="button">保存配置 JSON</button><button class="text-button" id="load-config" type="button">导入配置</button><input id="config-file" type="file" accept=".json,application/json" hidden></div></div>
+    </section>
+    <section id="panel-library" role="tabpanel" aria-labelledby="tab-library" hidden>
+      <div class="library-heading"><div><h2>一套造型，三种字母性格。</h2><p>每种样式都包含完整 A–Z，透明 PNG 可单独下载。</p></div><div class="style-tabs" role="group" aria-label="素材风格"><button type="button" data-style="compact" aria-pressed="true">短体金属</button><button type="button" data-style="tall" aria-pressed="false">拉长金属</button><button type="button" data-style="pumpkin" aria-pressed="false">南瓜造型</button></div></div>
+      <div id="letter-gallery" class="letter-gallery"></div>
+    </section>
+    <section id="panel-use" role="tabpanel" aria-labelledby="tab-use" hidden>
+      <div class="use-grid">
+        <article><span class="eyebrow">01 / SINGLE FILE</span><h2>把动画带走。</h2><p>“导出网页动画”会生成包含所选字母、组件和曲线的独立 HTML。不依赖外部字体或素材，双击即可播放。</p><pre><code>&lt;iframe src="./my-piston-animation.html"
+  title="字母动画"
+  style="width:360px;aspect-ratio:1;border:0"
+  loading="lazy"&gt;&lt;/iframe&gt;</code></pre><button id="use-export-html" type="button" class="button primary">下载当前网页动画</button></article>
+        <article><span class="eyebrow">02 / WEB COMPONENT</span><h2>接入你的项目。</h2><p>原生 Web Component，可以放进普通 HTML、React、Vue 等页面。下方代码包含当前字母和曲线。</p><pre><code id="embed-code"></code></pre><button id="copy-embed" type="button" class="button">复制嵌入代码</button><p class="small muted">API：<code>setConfig(config)</code>、<code>play()</code>、<code>pause()</code>、<code>renderAt(phase)</code>、<code>captureFrame(phase)</code>。</p></article>
+        <article><span class="eyebrow">03 / IMAGE</span><h2>需要一张动图？</h2><p>GIF 在你的浏览器里逐帧生成，保留当前速度、停留段和透明背景。适合聊天头像、文档和不支持脚本的页面。</p><button id="use-export-gif" type="button" class="button">下载当前 GIF</button></article>
+        <article><span class="eyebrow">04 / REUSABLE</span><h2>配置可以留到下次。</h2><p>保存 JSON 后，字母、背景、周期、行程和曲线控制点都会保留。编辑器也会自动记住本机的上一次设置。</p><a class="button" href="./README.md" target="_blank" rel="noopener">查看使用文档 ↗</a></article>
+      </div>
+    </section>
+  </main>
+  <footer><span>PISTON LETTER STUDIO</span><span>三套字母 · 一条属于你的曲线</span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./src/editor.js"></script>
+</body>
+</html>
