@@ -3,6 +3,7 @@
 一个可以替换字母、编辑行程曲线、导出网页动画和 GIF 的纯前端工作台。
 
 - 演示：<https://xjh-jorhai.github.io/piston-letter-studio/>
+- 最小双实例嵌入示例：<https://xjh-jorhai.github.io/piston-letter-studio/examples/embed.html>
 - 三套完整 A–Z：短体金属、拉长金属、南瓜造型，共 78 个透明 PNG。
 - 头部、躯干、左侧、右侧四个字母分别可调；额外保留 DDMC 的镜像左 D。
 - 两侧字母同步伸缩，中间字母反向联动。底座固定，收回终点没有外露活塞臂。

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>双实例嵌入示例 · Piston Letter Studio</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;padding:32px;background:#f7f5ef;color:#213143;font:14px/1.6 system-ui,"Microsoft YaHei",sans-serif}main{max-width:900px;margin:auto}h1{font-size:26px;line-height:1.3}p,a{color:#65737e}.examples{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0}article{padding:20px;background:#fffefa;border:1px solid #e3e3db;border-radius:12px}piston-letters{width:100%}label{display:flex;align-items:center;gap:10px}input{width:100%;min-width:0}button{font:inherit;padding:8px 14px;color:#213143;background:white;border:1px solid #d7ddd9;border-radius:6px;cursor:pointer}pre{overflow:auto;white-space:pre-wrap;background:#ecece5;padding:16px;border-radius:8px;font:12px/1.8 monospace}@media(max-width:600px){body{padding:20px}.examples{grid-template-columns:1fr}}
+</style>
+<main>
+  <a href="../">← 回到编辑器</a>
+  <h1>同一个组件，两组独立节奏。</h1>
+  <p>这页只加载组件模块和字母素材，不包含编辑器。两组动画可以分别暂停和调速。</p>
+  <div class="examples">
+    <article><h2>GTMC</h2><piston-letters id="one" left="G" right="T" body="M" top="C" period=".67" stroke="160"></piston-letters><button data-toggle="one">暂停 / 播放</button><label>周期<input type="range" data-period="one" min=".2" max="3" step=".01" value=".67"></label></article>
+    <article><h2>DDMC</h2><piston-letters id="two" left="D" right="D" body="M" top="C" period="1.5" stroke="100"></piston-letters><button data-toggle="two">暂停 / 播放</button><label>周期<input type="range" data-period="two" min=".2" max="3" step=".01" value="1.5"></label></article>
+  </div>
+  <pre>&lt;script type="module" src="../src/piston-letters.js"&gt;&lt;/script&gt;
+&lt;piston-letters left="G" right="T" body="M" top="C"
+  period="0.67" stroke="160"&gt;&lt;/piston-letters&gt;</pre>
+</main>
+<script type="module">
+  import '../src/piston-letters.js';
+  document.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',()=>{const c=document.getElementById(b.dataset.toggle);c.playing?c.pause():c.play();}));
+  document.querySelectorAll('[data-period]').forEach(input=>input.addEventListener('input',()=>document.getElementById(input.dataset.period).setAttribute('period',input.value)));
+</script>
+</html>

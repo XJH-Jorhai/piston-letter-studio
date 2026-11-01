@@ -231,7 +231,7 @@ export class PistonLetters extends ElementBase{
     if(background!=='transparent'){ctx.fillStyle=background;ctx.fillRect(0,0,size,size);}ctx.drawImage(this.canvas,0,0,size,size);return out;
   }
   async embeddedConfig(){
-    await this.ready;const config=this.config;config.assets=clone(this._assets.metadata);
+    const config=this.config,resolved=await resolveAssets(config,this.assetBase);config.assets=clone(resolved.metadata);
     await Promise.all(Object.entries(config.assets).map(async([slot,entry])=>{
       if(entry.src.startsWith('data:'))return;
       const response=await fetch(entry.src);if(!response.ok)throw new Error('无法打包素材：'+entry.src);

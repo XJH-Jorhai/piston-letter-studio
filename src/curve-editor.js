@@ -32,7 +32,7 @@ export class CurveEditor{
     const p=this.points[i];
     if(kind==='anchor'){
       if(!i||i===this.points.length-1)return;
-      const nt=clamp(t,this.points[i-1].t+.015,this.points[i+1].t-.015),nv=clamp(v),dt=nt-p.t,dv=nv-p.v;
+      const gap=Math.min(.015,(this.points[i+1].t-this.points[i-1].t)/2),nt=clamp(t,this.points[i-1].t+gap,this.points[i+1].t-gap),nv=clamp(v),dt=nt-p.t,dv=nv-p.v;
       p.t=nt;p.v=nv;for(const k of ['in','out'])if(p[k]){p[k].t+=dt;p[k].v=clamp(p[k].v+dv);}
     }else if(p[kind]){
       p[kind].t=clamp(t,kind==='in'?this.points[i-1].out.t:p.t,kind==='in'?p.t:this.points[i+1].in.t);p[kind].v=clamp(v);

@@ -1,7 +1,7 @@
 import {PistonLetters,makeGifSchedule} from './piston-letters.js';
-export function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+export function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.hidden=true;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 export async function exportGif(component,{size=768,onProgress=()=>{},signal}={}){
-  await component.ready;const config=component.config,offscreen=new PistonLetters();await offscreen.setConfig(config);
+  const config=component.config,offscreen=new PistonLetters();await offscreen.setConfig(config);
   const worker=new Worker(new URL('./gif-worker.js',import.meta.url),{type:'module'});
   let rejectPending;
   const wait=()=>new Promise((resolve,reject)=>{rejectPending=reject;worker.onmessage=e=>{if(e.data.type==='error')reject(new Error(e.data.message));else resolve(e.data);};worker.onerror=e=>reject(new Error(e.message||'GIF 编码失败。'));});

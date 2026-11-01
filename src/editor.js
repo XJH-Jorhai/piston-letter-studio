@@ -49,12 +49,12 @@ function renderLibrary(style='compact'){
 }
 document.querySelectorAll('[data-style]').forEach(b=>b.addEventListener('click',()=>renderLibrary(b.dataset.style)));
 function fileStem(){return [state.letters.left,state.letters.right,state.letters.body,state.letters.top].join('')+'-'+state.period.toFixed(2)+'s';}
-function lockExport(busy){
+function lockExport(busy,{cancellable=false}={}){
   exporting=busy;for(const id of ['export-html','export-gif','use-export-html','use-export-gif'])$(id).disabled=busy;
-  $('cancel-export').hidden=!busy;$('export-progress').hidden=!busy;
+  $('cancel-export').hidden=!busy||!cancellable;$('export-progress').hidden=!busy;
 }
-async function htmlExport(){if(exporting)return;lockExport(true);try{$('export-progress').querySelector('span').textContent='打包字母和曲线…';const blob=await exportHtml(animation);download(blob,fileStem()+'.html');notify('已下载独立网页动画，可离线播放或通过 iframe 嵌入。');}catch(e){notify(e.message);}finally{lockExport(false);}}
-async function gifExport(){if(exporting)return;lockExport(true);exportAbort=new AbortController();const progress=$('export-progress');try{const {blob}=await exportGif(animation,{size:768,signal:exportAbort.signal,onProgress:(fraction,i,n)=>{progress.querySelector('progress').value=fraction;progress.querySelector('span').textContent=i+' / '+n+' 帧';}});download(blob,fileStem()+'.gif');notify('GIF 已生成，完整保留当前字母与曲线。');}catch(e){notify(e.name==='AbortError'?'已取消导出。':e.message);}finally{lockExport(false);exportAbort=null;}}
+async function htmlExport(){if(exporting)return;const name=fileStem();lockExport(true);try{$('export-progress').querySelector('span').textContent='打包字母和曲线…';const blob=await exportHtml(animation);download(blob,name+'.html');notify('已下载独立网页动画，可离线播放或通过 iframe 嵌入。');}catch(e){notify(e.message);}finally{lockExport(false);}}
+async function gifExport(){if(exporting)return;const name=fileStem();lockExport(true,{cancellable:true});exportAbort=new AbortController();const progress=$('export-progress');try{const {blob}=await exportGif(animation,{size:768,signal:exportAbort.signal,onProgress:(fraction,i,n)=>{progress.querySelector('progress').value=fraction;progress.querySelector('span').textContent=i+' / '+n+' 帧';}});download(blob,name+'.gif');notify('GIF 已生成，完整保留当前字母与曲线。');}catch(e){notify(e.name==='AbortError'?'已取消导出。':e.message);}finally{lockExport(false);exportAbort=null;}}
 for(const id of ['export-html','use-export-html'])$(id).addEventListener('click',htmlExport);
 for(const id of ['export-gif','use-export-gif'])$(id).addEventListener('click',gifExport);
 $('cancel-export').addEventListener('click',()=>exportAbort?.abort());
